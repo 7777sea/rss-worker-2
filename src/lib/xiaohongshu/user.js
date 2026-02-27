@@ -26,10 +26,16 @@ let getUser = async (url) => {
 	return state.user;
 };
 
+// 白名单：只允许以下小红书用户 ID 被订阅
+const ALLOWED_UIDS = ['5964e3e582ec39569a0d5cbd'];
+
 let deal = async (ctx) => {
-	// const uid = ctx.params.user_id;
-	// const category = ctx.params.category;
 	const { uid } = ctx.req.param();
+
+	if (!ALLOWED_UIDS.includes(uid)) {
+		ctx.header('Content-Type', 'text/html');
+		return ctx.text('403 - Forbidden: This user ID is not allowed.', 403);
+	}
 	const category = 'notes';
 	const url = `https://www.xiaohongshu.com/user/profile/${uid}`;
 
